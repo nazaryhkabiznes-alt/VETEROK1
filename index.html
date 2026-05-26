@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Music nok | Player</title>
+    <style>
+        /* Стиль фона и интерфейса */
+        body { 
+            margin: 0; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); 
+            height: 100vh; display: flex; justify-content: center; align-items: center; color: white; font-family: sans-serif;
+        }
+        .wrapper { width: 350px; background: rgba(0,0,0,0.6); backdrop-filter: blur(15px); padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .img-area { width: 100%; height: 250px; border-radius: 15px; background: #222; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .song-details { text-align: center; margin-bottom: 20px; }
+        .controls { display: flex; justify-content: space-between; align-items: center; font-size: 30px; }
+        .play-pause { width: 60px; height: 60px; background: #1DB954; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+        #file-input { display: none; }
+        .add-btn { background: #1DB954; width: 100%; padding: 10px; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .music-list { margin-top: 20px; max-height: 150px; overflow-y: auto; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <div class="img-area"><span>🎵</span></div>
+        <div class="song-details">
+            <p class="name" id="track-name">Выберите трек</p>
+        </div>
+        
+        <audio id="main-audio"></audio>
+
+        <div class="controls">
+            <div class="play-pause" id="play-pause">▶</div>
+        </div>
+
+        <button class="add-btn" onclick="document.getElementById('file-input').click()">+ Добавить музыку</button>
+        <input type="file" id="file-input" accept="audio/*">
+
+        <div class="music-list" id="music-list">
+            </div>
+    </div>
+
+    <script>
+        const audio = document.getElementById("main-audio");
+        const trackName = document.getElementById("track-name");
+        const playPauseBtn = document.getElementById("play-pause");
+        const fileInput = document.getElementById("file-input");
+        const musicList = document.getElementById("music-list");
+
+        let playlist = JSON.parse(localStorage.getItem("nok_playlist") || "[]");
+
+        // Функция добавления музыки
+        fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const track = { name: file.name, url: URL.createObjectURL(file) };
+                playlist.push(track);
+                localStorage.setItem("nok_playlist", JSON.stringify(playlist));
+                renderList();
+            }
+        };
+
+        // Отрисовка списка
+        function renderList() {
+            musicList.innerHTML = playlist.map((t, i) => `
+                <div style="padding:5px; cursor:pointer; border-bottom:1px solid #333;" onclick="playTrack(${i})">
+                    ${t.name}
+                </div>
+            `).join('');
+        }
+
+        // Воспроизведение
+        function playTrack(index) {
+            audio.src = playlist[index].url;
+            trackName.innerText = playlist[index].name;
+            audio.play();
+            playPauseBtn.innerText = "⏸";
+        }
+
+        // Кнопка Play/Pause
+        playPauseBtn.onclick = () => {
+            if (audio.paused) { audio.play(); playPauseBtn.innerText = "⏸"; }
+            else { audio.pause(); playPauseBtn.innerText = "▶"; }
+        };
+
+        renderList();
+    </script>
+</body>
+</html>
