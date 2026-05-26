@@ -2,88 +2,154 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Music nok | Player</title>
+    <title>Dynamic Music Player</title>
+    <script src="https://cdn.jsdelivr.net/npm/music-metadata-browser@2.5.9/dist/music-metadata-browser.min.js"></script>
     <style>
-        /* Стиль фона и интерфейса */
-        body { 
-            margin: 0; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); 
-            height: 100vh; display: flex; justify-content: center; align-items: center; color: white; font-family: sans-serif;
+        /* Анимация плавного фона */
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-        .wrapper { width: 350px; background: rgba(0,0,0,0.6); backdrop-filter: blur(15px); padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .img-area { width: 100%; height: 250px; border-radius: 15px; background: #222; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; overflow: hidden; }
-        .song-details { text-align: center; margin-bottom: 20px; }
-        .controls { display: flex; justify-content: space-between; align-items: center; font-size: 30px; }
-        .play-pause { width: 60px; height: 60px; background: #1DB954; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; }
-        #file-input { display: none; }
-        .add-btn { background: #1DB954; width: 100%; padding: 10px; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        .music-list { margin-top: 20px; max-height: 150px; overflow-y: auto; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; }
+
+        body { 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #004e92, #00f2fe);
+            background-size: 400% 400%;
+            animation: gradientMove 15s ease infinite;
+            color: white; 
+            font-family: 'Segoe UI', sans-serif; 
+        }
+
+        .app-container { 
+            display: flex; 
+            gap: 30px; 
+            background: rgba(0, 0, 0, 0.3); 
+            padding: 40px; 
+            border-radius: 30px; 
+            backdrop-filter: blur(20px); 
+            width: 750px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .player-side { width: 300px; text-align: center; }
+        
+        #coverArt { 
+            width: 220px; 
+            height: 220px; 
+            border-radius: 20px; 
+            margin-bottom: 20px; 
+            object-fit: cover; 
+            border: 4px solid #4facfe;
+            box-shadow: 0 0 20px rgba(79, 172, 254, 0.5);
+        }
+        
+        audio { width: 100%; margin-bottom: 20px; }
+        
+        .upload-btn { 
+            background: #4facfe; 
+            padding: 12px 25px; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            display: block; 
+            font-weight: bold; 
+            transition: 0.3s;
+        }
+        .upload-btn:hover { background: #00f2fe; transform: scale(1.05); }
+
+        .playlist-side { width: 400px; }
+        .playlist-list { list-style: none; padding: 0; max-height: 350px; overflow-y: auto; }
+        .playlist-item { 
+            background: rgba(255, 255, 255, 0.08); 
+            margin: 8px 0; 
+            padding: 12px; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            transition: 0.2s; 
+        }
+        .playlist-item:hover { background: rgba(79, 172, 254, 0.3); }
     </style>
 </head>
 <body>
 
-    <div class="wrapper">
-        <div class="img-area"><span>🎵</span></div>
-        <div class="song-details">
-            <p class="name" id="track-name">Выберите трек</p>
-        </div>
-        
-        <audio id="main-audio"></audio>
-
-        <div class="controls">
-            <div class="play-pause" id="play-pause">▶</div>
-        </div>
-
-        <button class="add-btn" onclick="document.getElementById('file-input').click()">+ Добавить музыку</button>
-        <input type="file" id="file-input" accept="audio/*">
-
-        <div class="music-list" id="music-list">
-            </div>
+<div class="app-container">
+    <div class="player-side">
+        <img id="coverArt" src="https://via.placeholder.com/220?text=Загрузите+музыку" alt="Обложка">
+        <audio id="audioPlayer" controls></audio>
+        <label class="upload-btn">
+            Загрузить музыку
+            <input type="file" id="fileInput" accept="audio/*" style="display:none">
+        </label>
     </div>
 
-    <script>
-        const audio = document.getElementById("main-audio");
-        const trackName = document.getElementById("track-name");
-        const playPauseBtn = document.getElementById("play-pause");
-        const fileInput = document.getElementById("file-input");
-        const musicList = document.getElementById("music-list");
+    <div class="playlist-side">
+        <h3>Ваш плейлист</h3>
+        <ul id="playlist" class="playlist-list"></ul>
+    </div>
+</div>
 
-        let playlist = JSON.parse(localStorage.getItem("nok_playlist") || "[]");
+<script>
+    const audio = document.getElementById('audioPlayer');
+    const fileInput = document.getElementById('fileInput');
+    const playlistEl = document.getElementById('playlist');
+    const coverArt = document.getElementById('coverArt');
 
-        // Функция добавления музыки
-        fileInput.onchange = (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const track = { name: file.name, url: URL.createObjectURL(file) };
-                playlist.push(track);
-                localStorage.setItem("nok_playlist", JSON.stringify(playlist));
-                renderList();
+    // Загрузка плейлиста из памяти браузера
+    let tracks = JSON.parse(localStorage.getItem('myPlaylist')) || [];
+
+    function updatePlaylistUI() {
+        playlistEl.innerHTML = '';
+        tracks.forEach((track, index) => {
+            const li = document.createElement('li');
+            li.className = 'playlist-item';
+            li.textContent = track.name;
+            li.onclick = () => playTrack(index);
+            playlistEl.appendChild(li);
+        });
+    }
+
+    function playTrack(index) {
+        const track = tracks[index];
+        audio.src = track.url;
+        audio.play();
+        coverArt.src = track.cover || "https://via.placeholder.com/220?text=Нет+обложки";
+    }
+fileInput.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const fileUrl = URL.createObjectURL(file);
+        let coverUrl = null;
+
+        // Попытка извлечь обложку
+        try {
+            const metadata = await musicMetadata.parseBlob(file);
+            if (metadata.common.picture && metadata.common.picture.length > 0) {
+                const picture = metadata.common.picture[0];
+                const blob = new Blob([picture.data], { type: picture.format });
+                coverUrl = URL.createObjectURL(blob);
             }
-        };
-
-        // Отрисовка списка
-        function renderList() {
-            musicList.innerHTML = playlist.map((t, i) => `
-                <div style="padding:5px; cursor:pointer; border-bottom:1px solid #333;" onclick="playTrack(${i})">
-                    ${t.name}
-                </div>
-            `).join('');
+        } catch (err) {
+            console.log("Метаданные не найдены, продолжаем.");
         }
 
-        // Воспроизведение
-        function playTrack(index) {
-            audio.src = playlist[index].url;
-            trackName.innerText = playlist[index].name;
-            audio.play();
-            playPauseBtn.innerText = "⏸";
-        }
+        const newTrack = { name: file.name, url: fileUrl, cover: coverUrl };
+        tracks.push(newTrack);
+        
+        // Сохраняем в localStorage (сохраняются ссылки на текущую сессию)
+        localStorage.setItem('myPlaylist', JSON.stringify(tracks));
+        
+        updatePlaylistUI();
+        playTrack(tracks.length - 1);
+    };
 
-        // Кнопка Play/Pause
-        playPauseBtn.onclick = () => {
-            if (audio.paused) { audio.play(); playPauseBtn.innerText = "⏸"; }
-            else { audio.pause(); playPauseBtn.innerText = "▶"; }
-        };
-
-        renderList();
-    </script>
+    // Первичная отрисовка
+    updatePlaylistUI();
+</script>
 </body>
 </html>
