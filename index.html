@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -6,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VETEROK PRO</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
 
@@ -125,12 +125,12 @@
             letter-spacing: 3px;
             text-transform: uppercase;
             margin-bottom: 35px;
-            font-weight: 600;
+font-weight: 600;
         }
 
         .splash-loader-bar {
             width: 220px;
-height: 6px;
+            height: 6px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
             overflow: hidden;
@@ -151,6 +151,45 @@ height: 6px;
             50% { transform: scale(1.05); box-shadow: 0 0 55px rgba(0, 230, 255, 0.45); }
         }
         @keyframes loadApp { to { width: 100%; } }
+
+        /* --- СТИЛИ ОКНА АВТОРИЗАЦИИ --- */
+        .auth-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(4, 3, 8, 0.85); backdrop-filter: blur(12px);
+            z-index: 9500; display: flex; justify-content: center; align-items: center; padding: 20px;
+        }
+        .auth-card {
+            background: #110e1c; border: 1px solid rgba(0, 230, 255, 0.2);
+            padding: 30px; border-radius: 20px; width: 100%; max-width: 380px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6); text-align: center;
+        }
+        .auth-logo-row {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-size: 11px; color: rgba(255,255,255,0.4); letter-spacing: 2px;
+            text-transform: uppercase; margin-bottom: 15px; font-weight: 700;
+        }
+        .auth-dot { width: 6px; height: 6px; background: #00e6ff; border-radius: 50%; box-shadow: 0 0 8px #00e6ff; }
+        .auth-card h2 { color: #fff; font-size: 22px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase; }
+        .auth-subtitle { color: rgba(255,255,255,0.5); font-size: 12px; margin-bottom: 24px; line-height: 1.4; }
+        .auth-input-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+        .auth-input-group input {
+            background: rgba(0,0,0,0.4); border: 1px solid rgba(0,230,255,0.15);
+            color: #fff; padding: 14px; border-radius: 12px; font-size: 14px;
+            outline: none; font-weight: 600; text-align: center;
+        }
+        .auth-input-group input:focus { border-color: #00e6ff; box-shadow: 0 0 10px rgba(0,230,255,0.1); }
+        .auth-primary-btn {
+            width: 100%; background: linear-gradient(135deg, #0055ff 0%, #00bcff 100%);
+            border: none; color: #fff; padding: 14px; border-radius: 12px;
+            cursor: pointer; font-size: 13px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; box-shadow: 0 4px 15px rgba(0,188,255,0.3); transition: all 0.2s;
+        }
+        .auth-primary-btn:active { transform: scale(0.97); }
+        .auth-toggle-btn {
+            background: none; border: none; color: rgba(255,255,255,0.4);
+            font-size: 11px; margin-top: 15px; cursor: pointer; text-decoration: underline; font-weight: 600;
+        }
+        .auth-toggle-btn:hover { color: #00e6ff; }
 
         /* --- ТУТОРИАЛ --- */
         #tutorial-overlay {
@@ -174,7 +213,7 @@ height: 6px;
             flex-direction: column;
             align-items: center;
             transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-        }
+}
         .tutorial-pointer i {
             font-size: 32px;
             color: #00e6ff;
@@ -236,7 +275,8 @@ height: 6px;
         body.theme-dark .header-username { color: rgba(255, 255, 255, 0.45); }
         body.theme-light .header-username { color: rgba(0, 0, 0, 0.55); }
         .header-username { font-size: 12px; font-weight: 600; margin-top: 2px; }
-.settings-trigger-btn {
+        
+        .settings-trigger-btn {
             width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
             position: relative; z-index: 10;
         }
@@ -256,7 +296,7 @@ height: 6px;
             transition: transform 0.25s, border-color 0.25s, opacity 0.3s cubic-bezier(0.4, 0, 1, 1), max-height 0.3s ease, background 0.2s;
             max-height: 80px; overflow: hidden;
         }
-        body.theme-dark .playlist-item { background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%); border: 1px solid rgba(255, 255, 255, 0.04); }
+body.theme-dark .playlist-item { background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%); border: 1px solid rgba(255, 255, 255, 0.04); }
         body.theme-light .playlist-item { background: linear-gradient(135deg, rgba(0, 0, 0, 0.03) 0%, rgba(0, 0, 0, 0.01) 100%); border: 1px solid rgba(0, 0, 0, 0.04); }
         
         .playlist-item.removing {
@@ -290,7 +330,7 @@ height: 6px;
 
         /* --- КНОПКИ УПРАВЛЕНИЯ --- */
         body.theme-dark .footer-controls { border-top: 1px solid rgba(255, 255, 255, 0.06); }
-body.theme-light .footer-controls { border-top: 1px solid rgba(0, 0, 0, 0.06); }
+        body.theme-light .footer-controls { border-top: 1px solid rgba(0, 0, 0, 0.06); }
         .footer-controls { padding-top: 20px; position: relative; }
         
         .std-btn {
@@ -309,7 +349,7 @@ body.theme-light .footer-controls { border-top: 1px solid rgba(0, 0, 0, 0.06); }
         .player-overlay.open { transform: translateY(0); }
 
         @media (min-width: 768px) {
-            .player-overlay { width: 480px; height: 85vh; left: 50%; top: 50%; transform: translate(-50%, 150%); border-radius: 24px; border: 1px solid rgba(0, 230, 255, 0.2); box-shadow: 0 25px 60px rgba(0,0,0,0.8); }
+.player-overlay { width: 480px; height: 85vh; left: 50%; top: 50%; transform: translate(-50%, 150%); border-radius: 24px; border: 1px solid rgba(0, 230, 255, 0.2); box-shadow: 0 25px 60px rgba(0,0,0,0.8); }
             .player-overlay.open { transform: translate(-50%, -50%); }
         }
 
@@ -341,7 +381,8 @@ body.theme-light .footer-controls { border-top: 1px solid rgba(0, 0, 0, 0.06); }
         body.theme-dark .time-box { color: rgba(255, 255, 255, 0.4); }
         body.theme-light .time-box { color: rgba(0, 0, 0, 0.5); }
         .time-box { display: flex; justify-content: space-between; font-size: 12px; margin-top: 8px; font-weight: 600; }
-.controls { display: flex; align-items: center; justify-content: center; gap: 20px; }
+
+        .controls { display: flex; align-items: center; justify-content: center; gap: 20px; }
         
         body.theme-dark .controls button { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); color: #fff; }
         body.theme-light .controls button { background: rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.05); color: #1a1a24; }
@@ -357,7 +398,7 @@ body.theme-light .footer-controls { border-top: 1px solid rgba(0, 0, 0, 0.06); }
 
         body.theme-dark .speed-panel { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.04); }
         body.theme-light .speed-panel { background: rgba(0, 0, 0, 0.02); border: 1px solid rgba(0, 0, 0, 0.04); }
-        .speed-panel { border-radius: 14px; padding: 12px 16px; max-width: 400px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+.speed-panel { border-radius: 14px; padding: 12px 16px; max-width: 400px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
         
         .speed-row { display: flex; align-items: center; justify-content: space-between; width: 100%; }
         body.theme-dark .speed-label { color: rgba(255, 255, 255, 0.4); }
@@ -388,7 +429,7 @@ body.theme-light .footer-controls { border-top: 1px solid rgba(0, 0, 0, 0.06); }
         .timer-chip.selected { background: rgba(0, 230, 255, 0.15) !important; border-color: #00e6ff !important; color: #00e6ff !important; }
 
         /* --- МОДАЛЬНЫЕ ОКНА --- */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(4, 3, 7, 0.88); backdrop-filter: blur(10px); z-index: 200; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; padding: 20px; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(4, 3, 7, 0.88); backdrop-filter: blur(10px); z-index: 200; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; padding: 20px; }
         .modal-overlay.open { opacity: 1; pointer-events: auto; }
         
         body.theme-dark .modal-box { background: #0f0c1b; color: #fff; }
@@ -400,7 +441,7 @@ body.theme-light .footer-controls { border-top: 1px solid rgba(0, 0, 0, 0.06); }
         
         body.theme-dark .modal-close { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); color: #fff; }
         body.theme-light .modal-close { background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.06); color: #1a1a24; }
-        .modal-close { width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.modal-close { width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
         .confirm-buttons { display: flex; gap: 12px; margin-top: 20px; }
         .confirm-btn { flex: 1; padding: 14px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; text-transform: uppercase; letter-spacing: 1px; transition: transform 0.1s; }
@@ -428,7 +469,7 @@ body.theme-light .footer-controls { border-top: 1px solid rgba(0, 0, 0, 0.06); }
         .username-input { width: 100%; border-radius: 10px; padding: 12px; font-size: 14px; font-weight: 600; text-align: center; outline: none; }
 
         /* ТЕМАТИЧЕСКИЙ СЕЛЕКТОР */
-.theme-section { display: flex; align-items: center; justify-content: space-between; padding: 14px; border-radius: 12px; }
+        .theme-section { display: flex; align-items: center; justify-content: space-between; padding: 14px; border-radius: 12px; }
         body.theme-dark .theme-section { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); }
         body.theme-light .theme-section { background: rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.05); }
         .theme-label { font-size: 12px; font-weight: 700; text-transform: uppercase; }
@@ -441,8 +482,7 @@ body.theme-light .footer-controls { border-top: 1px solid rgba(0, 0, 0, 0.06); }
         .perm-text { display: flex; flex-direction: column; }
         .perm-title { font-size: 12px; font-weight: 700; color: #fff; }
         .perm-desc { font-size: 10px; color: rgba(255,255,255,0.5); }
-
-        .stats-section { background: rgba(0, 230, 255, 0.03); border: 1px solid rgba(0, 230, 255, 0.1); border-radius: 16px; padding: 16px; display: flex; align-items: center; justify-content: space-between; }
+.stats-section { background: rgba(0, 230, 255, 0.03); border: 1px solid rgba(0, 230, 255, 0.1); border-radius: 16px; padding: 16px; display: flex; align-items: center; justify-content: space-between; }
         .stats-info { display: flex; flex-direction: column; gap: 4px; }
         .stats-label { font-size: 10px; text-transform: uppercase; color: rgba(0, 230, 255, 0.7); font-weight: 700; }
         .stats-value { font-size: 18px; font-weight: 800; color: #00e6ff; }
@@ -473,15 +513,109 @@ body.theme-light .footer-controls { border-top: 1px solid rgba(0, 0, 0, 0.06); }
         
         .eq-buttons { display: flex; gap: 10px; }
         body.theme-dark .eq-btn { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); color: #fff; }
-body.theme-light .eq-btn { background: rgba(0, 0, 0, 0.03); border: 1px solid rgba(0, 0, 0, 0.08); color: #1a1a24; }
+        body.theme-light .eq-btn { background: rgba(0, 0, 0, 0.03); border: 1px solid rgba(0, 0, 0, 0.08); color: #1a1a24; }
         .eq-btn { flex: 1; padding: 12px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; text-transform: uppercase; transition: all 0.2s; }
         .eq-btn.active-bass { background: rgba(0, 230, 255, 0.2) !important; border-color: #00e6ff !important; color: #00e6ff !important; box-shadow: 0 0 10px rgba(0,230,255,0.2); }
+
+        /* --- СТИЛИ ДЛЯ КНОПКИ И ОКНА ПРЕМИУМА --- */
+        .premium-trigger-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #ffe066 0%, #f5a623 100%);
+            color: #111116;
+            border: none;
+            padding: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(245, 166, 35, 0.25);
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 5px;
+        }
+        .premium-trigger-btn:hover {
+            transform: translateY(-2px);
+box-shadow: 0 6px 20px rgba(245, 166, 35, 0.4);
+        }
+        .premium-crown { font-size: 15px; }
+
+        /* Окно премиума */
+        #premium-modal .modal-box {
+            border-color: #f5a623;
+            box-shadow: 0 25px 50px rgba(245, 166, 35, 0.15);
+            max-width: 460px;
+        }
+        body.theme-light #premium-modal .modal-box {
+            background: #ffffff;
+        }
+        body.theme-dark #premium-modal .modal-box {
+            background: #110e1c;
+        }
+        .p-modal-header { text-align: center; margin-bottom: 22px; }
+        .p-modal-badge {
+            background: rgba(245, 166, 35, 0.15);
+            color: #f5a623;
+            padding: 4px 12px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            border-radius: 20px;
+            border: 1px solid rgba(245, 166, 35, 0.3);
+            display: inline-block;
+        }
+        .p-modal-header h2 { color: #f5a623; font-size: 20px; font-weight: 800; margin: 12px 0 6px; text-transform: uppercase; }
+        body.theme-dark .p-modal-subtitle { color: rgba(255, 255, 255, 0.5); }
+        body.theme-light .p-modal-subtitle { color: rgba(0, 0, 0, 0.6); }
+        .p-modal-subtitle { font-size: 12px; font-weight: 500; }
+
+        .p-features-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 22px; text-align: left; }
+        .p-feature-item { display: flex; gap: 12px; align-items: flex-start; }
+        .p-feature-icon { font-size: 18px; padding-top: 1px; }
+        .p-feature-text h3 { color: #00e6ff; font-size: 13px; font-weight: 700; margin: 0 0 3px; }
+        body.theme-dark .p-feature-text p { color: rgba(255, 255, 255, 0.6); }
+        body.theme-light .p-feature-text p { color: rgba(0, 0, 0, 0.7); }
+        .p-feature-text p { font-size: 11px; line-height: 1.4; font-weight: 500; }
+
+        .p-rates { display: flex; gap: 12px; margin-bottom: 22px; }
+        body.theme-dark .p-rate-card { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.08); }
+        body.theme-light .p-rate-card { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.08); }
+        .p-rate-card {
+            flex: 1; border: 1px solid; border-radius: 12px; padding: 14px; text-align: center; position: relative; cursor: pointer;
+        }
+        .p-rate-card.popular {
+            border-color: #f5a623 !important;
+            background: linear-gradient(180deg, rgba(245, 166, 35, 0.02) 0%, rgba(245, 166, 35, 0.08) 100%) !important;
+        }
+        .p-rate-badge {
+            position: absolute; top: -9px; left: 50%; transform: translateX(-50%);
+            background: #f5a623; color: #111; font-size: 8px; font-weight: 800;
+            padding: 2px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        body.theme-dark .p-rate-time { color: rgba(255,255,255,0.4); }
+        body.theme-light .p-rate-time { color: rgba(0,0,0,0.5); }
+        .p-rate-time { font-size: 11px; font-weight: 600; margin-bottom: 4px; text-transform: uppercase; }
+        body.theme-dark .p-rate-price { color: #fff; }
+        body.theme-light .p-rate-price { color: #1a1a24; }
+        .p-rate-price { font-size: 18px; font-weight: 800; }
+
+        .p-submit-btn {
+            width: 100%; background: linear-gradient(135deg, #f5a623 0%, #d48806 100%);
+            color: #111116; border: none; padding: 14px; font-size: 14px; font-weight: 700;
+            border-radius: 12px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 4px 20px rgba(245, 166, 35, 0.25); transition: all 0.2s ease;
+        }
+        .p-submit-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 25px rgba(245, 166, 35, 0.4); }
 
         @media (max-width: 480px) {
             .main-screen { padding: 16px; }
             .playlist-item { padding: 10px 12px; }
             .fixed-cover { max-width: 210px; }
-            .controls button { width: 44px; height: 44px; font-size: 16px; }
+.controls button { width: 44px; height: 44px; font-size: 16px; }
             .play-btn { width: 58px !important; height: 58px !important; }
         }
     </style>
@@ -494,6 +628,23 @@ body.theme-light .eq-btn { background: rgba(0, 0, 0, 0.03); border: 1px solid rg
     <div class="tutorial-pointer" id="tut-pointer">
         <i class="fas fa-long-arrow-alt-down"></i>
         <div class="tutorial-hint-box" id="tut-text">Подсказка</div>
+    </div>
+
+    <div id="auth-modal" class="auth-overlay" style="display: none;">
+        <div class="auth-card">
+            <div class="auth-logo-row">
+                <div class="auth-dot"></div>
+                <span>VETEROK NETWORK ID</span>
+            </div>
+            <h2 id="auth-title">Создать аккаунт</h2>
+            <p class="auth-subtitle" id="auth-subtitle">Введите настоящий Gmail для привязки Вашего профиля</p>
+            <div class="auth-input-group">
+                <input type="email" id="auth-email" placeholder="example@gmail.com" required>
+                <input type="password" id="auth-password" placeholder="Придумайте пароль (от 6 символов)" required>
+            </div>
+            <button class="auth-primary-btn" id="auth-primary-btn" onclick="handleAuthSubmit()">Зарегистрироваться</button>
+            <button class="auth-toggle-btn" id="auth-toggle-btn" onclick="toggleAuthMode()">Уже есть аккаунт? Войти</button>
+        </div>
     </div>
 
     <div id="splash-screen">
@@ -540,13 +691,13 @@ body.theme-light .eq-btn { background: rgba(0, 0, 0, 0.03); border: 1px solid rg
                     </div>
                 </div>
                 <div class="perm-item">
-                    <i class="fas fa-layer-group"></i>
+<i class="fas fa-layer-group"></i>
                     <div class="perm-text">
                         <span class="perm-title">Отображение поверх других окон</span>
                         <span class="perm-desc">Позволяет виджету работать во время использования других программ.</span>
                     </div>
                 </div>
-</div>
+            </div>
 
             <div class="confirm-buttons">
                 <button class="confirm-btn delete" id="permission-close-btn" style="background: linear-gradient(135deg, #0055ff, #00bcff);">Предоставить доступы</button>
@@ -601,6 +752,60 @@ body.theme-light .eq-btn { background: rgba(0, 0, 0, 0.03); border: 1px solid rg
         </div>
     </div>
 
+    <div class="modal-overlay" id="premium-modal">
+        <div class="modal-box" style="text-align: center;">
+            <button class="modal-close" id="close-premium" style="position: absolute; top: 15px; right: 15px;"><i class="fas fa-times"></i></button>
+            
+            <div class="p-modal-header">
+                <span class="p-modal-badge">PREMIUM</span>
+                <h2>Прокачай свой звук</h2>
+<p class="p-modal-subtitle">Поддержи проект и разблокируй закрытые функции</p>
+            </div>
+
+            <div class="p-features-list">
+                <div class="p-feature-item">
+                    <span class="p-feature-icon">🎛️</span>
+                    <div class="p-feature-text">
+                        <h3>Приватные пресеты эквалайзера</h3>
+                        <p>Готовые конфиги от профи: мощнейший Bass Boost, живой эффект «Маленькая комната», объемный «Большой зал» и другие популярные настройки.</p>
+                    </div>
+                </div>
+                
+                <div class="p-feature-item">
+                    <span class="p-feature-icon">🌙</span>
+                    <div class="p-feature-text">
+                        <h3>Продвинутый таймер сна</h3>
+                        <p>Настраивай точное время отключения плеера и засыпай спокойно, не беспокоясь за заряд батареи.</p>
+                    </div>
+                </div>
+
+                <div class="p-feature-item">
+                    <span class="p-feature-icon">🎶</span>
+                    <div class="p-feature-text">
+                        <h3>Создание плейлистов</h3>
+                        <p>Группируй любимые треки по настроениям, жанрам или стилям без каких-либо ограничений.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-rates">
+                <a href="ССЫЛКА_НА_ТВОЕ_ПРИЛОЖЕНИЕ" target="_blank" class="p-rate-card" style="text-decoration: none;">
+                    <div class="p-rate-time">1 Месяц</div>
+                    <div class="p-rate-price">89₽</div>
+                </a>
+                <a href="ССЫЛКА_НА_ТВОЕ_ПРИЛОЖЕНИЕ" target="_blank" class="p-rate-card popular" style="text-decoration: none;">
+                    <div class="p-rate-badge">Выгодно</div>
+                    <div class="p-rate-time">1 Год</div>
+                    <div class="p-rate-price">189₽</div>
+                </a>
+            </div>
+
+            <a href="ССЫЛКА_НА_ТВОЕ_ПРИЛОЖЕНИЕ" target="_blank" style="text-decoration: none;">
+                <button class="p-submit-btn">Оформить подписку</button>
+            </a>
+        </div>
+    </div>
+
     <div class="main-screen">
         <div class="main-header-row" id="step-profile">
             <div class="brand-zone">
@@ -612,7 +817,8 @@ body.theme-light .eq-btn { background: rgba(0, 0, 0, 0.03); border: 1px solid rg
             </div>
             <button class="settings-trigger-btn" id="open-settings"><i class="fas fa-gear"></i></button>
         </div>
-<ul class="playlist-list" id="playlist-list"></ul>
+        
+        <ul class="playlist-list" id="playlist-list"></ul>
         
         <div class="footer-controls" id="step-upload">
             <button class="std-btn" id="action-upload-trigger">
@@ -630,7 +836,7 @@ body.theme-light .eq-btn { background: rgba(0, 0, 0, 0.03); border: 1px solid rg
         </div>
 
         <div class="fixed-cover">
-            <img id="player-cover" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><rect width='100%25' height='100%25' fill='%23100a26'/><circle cx='200' cy='180' r='80' fill='%2300e6ff' opacity='0.1'/><path d='M200 40 L220 150 L170 170 L230 270 L180 280 L210 370' stroke='%2300e6ff' stroke-width='4' fill='none'/></svg>">
+<img id="player-cover" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><rect width='100%25' height='100%25' fill='%23100a26'/><circle cx='200' cy='180' r='80' fill='%2300e6ff' opacity='0.1'/><path d='M200 40 L220 150 L170 170 L230 270 L180 280 L210 370' stroke='%2300e6ff' stroke-width='4' fill='none'/></svg>">
         </div>
 
         <div class="track-info">
@@ -690,17 +896,20 @@ body.theme-light .eq-btn { background: rgba(0, 0, 0, 0.03); border: 1px solid rg
             <div class="settings-content">
                 <div class="profile-card">
                     <div class="avatar-container" id="avatar-container-trigger">
-                        <img id="settings-avatar" class="big-avatar" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='%231a113c'/><circle cx='50' cy='40' r='20' fill='%2300e6ff' opacity='0.4'/><path d='M20 85 C20 65, 80 65, 80 85' fill='%2300e6ff'
-opacity='0.4'/></svg>">
+                        <img id="settings-avatar" class="big-avatar" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='%231a113c'/><circle cx='50' cy='40' r='20' fill='%2300e6ff' opacity='0.4'/><path d='M20 85 C20 65, 80 65, 80 85' fill='%2300e6ff' opacity='0.4'/></svg>">
                         <div class="change-avatar-overlay"><i class="fas fa-camera"></i></div>
                     </div>
                     <input type="file" id="avatar-upload" accept="image/*">
                     <input type="text" class="username-input" id="username-input" placeholder="Твой никнейм" value="Пользователь" maxlength="18">
+                    
+                    <button class="premium-trigger-btn" id="open-premium-btn">
+                        <span class="premium-crown">👑</span> Купить Премиум
+                    </button>
                 </div>
 
                 <div class="theme-section">
                     <span class="theme-label"><i class="fas fa-palette" style="color: #00e6ff; margin-right: 8px;"></i>Тема оформления</span>
-                    <select class="theme-select" id="theme-selector">
+<select class="theme-select" id="theme-selector">
                         <option value="dark">Тёмная</option>
                         <option value="light">Светлая</option>
                     </select>
@@ -732,6 +941,74 @@ opacity='0.4'/></svg>">
     <audio id="audio" crossorigin="anonymous"></audio>
 
     <script>
+        // ИНИЦИАЛИЗАЦИЯ SUPABASE
+        const SUPABASE_URL = "ТВОЙ_SUPABASE_URL";
+        const SUPABASE_ANON_KEY = "ТВОЙ_SUPABASE_ANON_KEY";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let isSignUpMode = true; // Режим окна: true = регистрация, false = вход
+
+        // Функция переключения Вход / Регистрация
+        function toggleAuthMode() {
+            isSignUpMode = !isSignUpMode;
+            const title = document.getElementById('auth-title');
+            const subtitle = document.getElementById('auth-subtitle');
+            const primaryBtn = document.getElementById('auth-primary-btn');
+            const toggleBtn = document.getElementById('auth-toggle-btn');
+            
+            if (isSignUpMode) {
+                title.innerText = "Создать аккаунт";
+                subtitle.innerText = "Введите настоящий Gmail для привязки Вашего профиля";
+                primaryBtn.innerText = "Зарегистрироваться";
+                toggleBtn.innerText = "Уже есть аккаунт? Войти";
+            } else {
+                title.innerText = "Вход в аккаунт";
+                subtitle.innerText = "Введите данные своей учетной записи";
+                primaryBtn.innerText = "Войти";
+                toggleBtn.innerText = "Нет аккаунта? Регистрация";
+            }
+        }
+
+        // Обработчик кнопки регистрации / входа
+        async function handleAuthSubmit() {
+            const email = document.getElementById('auth-email').value.trim();
+            const password = document.getElementById('auth-password').value;
+
+            if (!email.includes('@') || !email.endsWith('.com')) {
+                alert("Введите корректный Gmail адрес!");
+                return;
+            }
+            if (password.length < 6) {
+                alert("Минимальная длина пароля для работы с Supabase — 6 символов!");
+                return;
+            }
+
+            if (isSignUpMode) {
+                // Регистрируем в Supabase Auth
+                const { data, error } = await supabase.auth.signUp({ email, password });
+                if (error) {
+                    alert("Ошибка базы данных: " + error.message);
+                } else if (data.user) {
+                    // Создаем пустой профиль пользователя в публичной таблице profiles
+                    await supabase.from('profiles').insert([
+                        { id: data.user.id, email: data.user.email, is_premium: false }
+                    ]);
+                    alert("Регистрация успешна!");
+                    document.getElementById('auth-modal').style.display = 'none';
+                    checkFirstLaunch(); // Переходим к локальному туториалу
+                }
+            } else {
+                // Вход
+const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                if (error) {
+                    alert("Неверный Gmail или пароль");
+                } else if (data.user) {
+                    document.getElementById('auth-modal').style.display = 'none';
+                    checkFirstLaunch();
+                }
+            }
+        }
+
         // ЭФФЕКТЫ ЧАСТИЦ НА ЗАДНЕМ ПЛАНЕ
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
@@ -781,7 +1058,7 @@ opacity='0.4'/></svg>">
                 const gain = audioCtx.createGain();
                 osc.type = 'triangle';
                 osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.15);
+                osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.15);
                 gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
                 gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.15);
                 osc.connect(gain); gain.connect(audioCtx.destination);
@@ -811,18 +1088,18 @@ osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.15);
             loadThemeFromDB();
         };
 
-        // ТАЙМЕР ОТОБРАЖЕНИЯ СПЛЭШ СТАРТА
+        // ТАЙМЕР ОТОБРАЖЕНИЯ СПЛЭШ СТАРТА И ВЫЗОВ АВТОРИЗАЦИИ
         window.addEventListener('DOMContentLoaded', () => {
             if (window.history.state !== 'app_home') {
                 window.history.replaceState('app_home', null, '');
             }
-
-            setTimeout(() => {
+setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
                 splash.style.opacity = '0';
                 setTimeout(() => {
                     splash.style.display = 'none';
-                    checkFirstLaunch();
+                    // Как только Сплэш ушел — открываем окно регистрации
+                    document.getElementById('auth-modal').style.display = 'flex';
                 }, 600);
             }, 5500);
         });
@@ -857,6 +1134,10 @@ osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.15);
                 document.getElementById('sleep-modal').classList.remove('open');
                 return;
             }
+            if (document.getElementById('premium-modal').classList.contains('open')) {
+                document.getElementById('premium-modal').classList.remove('open');
+                return;
+            }
             
             window.history.pushState('app_home', null, '');
         });
@@ -874,7 +1155,7 @@ osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.15);
             const chosenName = document.getElementById('welcome-name-field').value.trim();
             if (chosenName) {
                 document.getElementById('header-username').textContent = chosenName;
-document.getElementById('username-input').value = chosenName;
+                document.getElementById('username-input').value = chosenName;
                 saveProfileDataToDB("username", chosenName);
             }
             closeWelcomeAndRunTutorial();
@@ -901,7 +1182,7 @@ document.getElementById('username-input').value = chosenName;
 
             let steps = [
                 { id: 'step-upload', text: 'Здесь ты можешь загрузить свои MP3 треки напрямую в плеер!', pos: 'top' },
-                { id: 'open-settings', text: 'Тут можно настроить профиль, сменить аватар или переключить тему работы.', pos: 'bottom' }
+{ id: 'open-settings', text: 'Тут можно настроить профиль, сменить аватар или переключить тему работы.', pos: 'bottom' }
             ];
             let currentStep = 0;
 
@@ -967,7 +1248,7 @@ document.getElementById('username-input').value = chosenName;
         });
 
         // ЛОГИКА ДВИЖКА ПЛЕЕРА
-let playlist = [];
+        let playlist = [];
         let currentTrackIndex = -1;
         let isPlaying = false;
         let isShuffleMode = false;
@@ -993,7 +1274,7 @@ let playlist = [];
         const progress = document.getElementById('progress');
         const currentTimeEl = document.getElementById('current-time');
         const durationEl = document.getElementById('duration');
-        const fileUpload = document.getElementById('file-upload');
+const fileUpload = document.getElementById('file-upload');
         const playlistListEl = document.getElementById('playlist-list');
         const playerOverlay = document.getElementById('player-overlay');
         const closePlayerBtn = document.getElementById('close-player');
@@ -1051,7 +1332,7 @@ let playlist = [];
                             <div class="track-artist">${index === currentTrackIndex && isPlaying ? 'Воспроизведение' : 'Аудиофайл'}</div>
                         </div>
                     </div>
-<button class="delete-track-btn" data-id="${track.id}" data-index="${index}"><i class="fas fa-trash"></i></button>
+                    <button class="delete-track-btn" data-id="${track.id}" data-index="${index}"><i class="fas fa-trash"></i></button>
                 `;
 
                 li.querySelector('.track-info-row').addEventListener('click', () => {
@@ -1069,7 +1350,7 @@ let playlist = [];
                         color: track.avatar.from
                     };
                     document.getElementById('delete-modal-text').textContent = `Вы точно хотите удалить трек "${track.name.replace(/\.mp3$/i, '')}"?`;
-                    document.getElementById('delete-confirm-modal').classList.add('open');
+document.getElementById('delete-confirm-modal').classList.add('open');
                     pushModalState('delete_modal');
                 });
 
@@ -1133,7 +1414,7 @@ let playlist = [];
             Array.from(e.target.files).forEach(file => {
                 store.add({ name: file.name, fileBlob: file, avatar: generateRandomAvatar() });
                 count++;
-if (count === e.target.files.length) loadPlaylistFromDB();
+                if (count === e.target.files.length) loadPlaylistFromDB();
             });
         });
 
@@ -1153,7 +1434,7 @@ if (count === e.target.files.length) loadPlaylistFromDB();
         shuffleBtn.addEventListener('click', () => {
             isShuffleMode = !isShuffleMode;
             if(isShuffleMode) shuffleBtn.classList.add('active');
-            else shuffleBtn.classList.remove('active');
+else shuffleBtn.classList.remove('active');
         });
 
         function getNextTrackIndex() {
@@ -1216,7 +1497,7 @@ if (count === e.target.files.length) loadPlaylistFromDB();
             sleepModal.classList.add('open');
             pushModalState('sleep_panel');
             if (sleepTimerTimeout) {
-sleepStopBtn.style.display = 'block';
+                sleepStopBtn.style.display = 'block';
             } else {
                 sleepStopBtn.style.display = 'none';
             }
@@ -1248,7 +1529,7 @@ sleepStopBtn.style.display = 'block';
         function setSleepTimer(minutes) {
             clearSleepTimer();
             sleepTimeLeft = minutes * 60;
-            openSleepBtn.classList.add('active');
+openSleepBtn.classList.add('active');
             updateSleepButtonUI();
 
             sleepTimerTimeout = setTimeout(() => {
@@ -1283,14 +1564,13 @@ sleepStopBtn.style.display = 'block';
         }
 
         function executeSleepShutdown() {
-            // Плавное затухание звука перед выключением
             let vol = 1.0;
             const fadeInterval = setInterval(() => {
                 vol -= 0.1;
                 if (vol <= 0.1) {
                     clearInterval(fadeInterval);
                     pauseTrack();
-                    audio.volume = 1.0; // Сброс громкости обратно до стандарта
+                    audio.volume = 1.0; 
                     clearSleepTimer();
                 } else {
                     audio.volume = vol;
@@ -1319,12 +1599,22 @@ sleepStopBtn.style.display = 'block';
                 saveProfileDataToDB("avatar", base64Img);
             };
             reader.readAsDataURL(file);
-});
+        });
 
         document.getElementById('username-input').addEventListener('input', (e) => {
             const name = e.target.value.trim() || "Пользователь";
             document.getElementById('header-username').textContent = name;
             saveProfileDataToDB("username", name);
+        });
+
+        // ЛОГИКА ОКНА ПРЕМИУМА
+        const premiumModal = document.getElementById('premium-modal');
+        document.getElementById('open-premium-btn').addEventListener('click', () => {
+            premiumModal.classList.add('open');
+            pushModalState('premium_panel');
+        });
+        document.getElementById('close-premium').addEventListener('click', () => {
+            premiumModal.classList.remove('open');
         });
 
         // УПРАВЛЕНИЕ СВЕТЛОЙ / ТЁМНОЙ ТЕМОЙ
@@ -1336,7 +1626,7 @@ sleepStopBtn.style.display = 'block';
         });
 
         function setAppTheme(theme) {
-            if (theme === 'light') {
+if (theme === 'light') {
                 document.body.className = "theme-light";
                 themeSelector.value = "light";
             } else {
@@ -1414,7 +1704,7 @@ sleepStopBtn.style.display = 'block';
 
         // ЭКВАЛАЙЗЕР СЛАЙДЕРЫ
         const eqModal = document.getElementById('eq-modal');
-document.getElementById('open-eq').addEventListener('click', () => { initAudioEngine(); eqModal.classList.add('open'); pushModalState('eq_panel'); });
+        document.getElementById('open-eq').addEventListener('click', () => { initAudioEngine(); eqModal.classList.add('open'); pushModalState('eq_panel'); });
         document.getElementById('close-eq').addEventListener('click', () => eqModal.classList.remove('open'));
 
         function buildEQSlidersUI() {
@@ -1425,7 +1715,7 @@ document.getElementById('open-eq').addEventListener('click', () => { initAudioEn
                 box.classList.add('eq-slider-box');
                 box.innerHTML = `
                     <input type="range" class="eq-slider" min="-12" max="12" step="1" value="${filter.gain.value}" data-index="${idx}">
-                    <span class="eq-freq">${frequencies[idx] >= 1000 ? (frequencies[idx]/1000)+'kHz' : frequencies[idx]+'Hz'}</span>
+<span class="eq-freq">${frequencies[idx] >= 1000 ? (frequencies[idx]/1000)+'kHz' : frequencies[idx]+'Hz'}</span>
                 `;
                 box.querySelector('.eq-slider').addEventListener('input', (e) => {
                     filters[e.target.dataset.index].gain.value = parseFloat(e.target.value);
